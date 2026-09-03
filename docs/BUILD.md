@@ -81,6 +81,66 @@ l’image se crée quand même avec l’icône de disque par défaut.
 
 `dist/` est ignoré par Git : les images disque ne sont pas versionnées.
 
+## Signer et notariser pour la distribution
+
+Les builds décrits plus haut sont signés « ad hoc » : ils fonctionnent sur la
+machine qui les produit, mais Gatekeeper les refuse ailleurs. Pour distribuer
+l’image disque, il faut un certificat **Developer ID Application**, qui suppose
+une adhésion à l’Apple Developer Program. Un certificat *Apple Development* ne
+convient pas : il ne sert qu’au développement, il ne lève pas l’avertissement
+sur les autres Mac, et son nom commun contient l’adresse e-mail du compte, qui
+se retrouverait alors dans la signature d’un fichier public.
+
+Vérifier ce que contient le trousseau :
+
+```bash
+security find-identity -v -p codesigning
+```
+
+Une fois `Developer ID Application: … (TEAMID)` présent :
+
+```bash
+xcodebuild build \
+  -project FloatAssist.xcodeproj \
+  -scheme FloatAssist \
+  -configuration Release \
+  -destination 'platform=macOS,arch=arm64' \
+  -derivedDataPath ./build/DerivedData \
+  CODE_SIGN_STYLE=Manual \
+  CODE_SIGN_IDENTITY="Developer ID Application" \
+  DEVELOPMENT_TEAM=TEAMID
+
+codesign --verify --strict --verbose=2 \
+  "./build/DerivedData/Build/Products/Release/Float Assist.app"
+
+./scripts/create-dmg.sh \
+  "./build/DerivedData/Build/Products/Release/Float Assist.app" \
+  ./dist
+
+codesign --sign "Developer ID Application" --timestamp ./dist/FloatAssist.dmg
+```
+
+La notarisation demande des identifiants App Store Connect. Enregistrez-les
+une fois pour toutes vous-même — ils ne doivent apparaître ni dans le dépôt ni
+dans un historique de commandes partagé :
+
+```bash
+xcrun notarytool store-credentials "AC_NOTARY" \
+  --apple-id VOTRE_APPLE_ID --team-id TEAMID
+```
+
+Puis, à chaque version :
+
+```bash
+xcrun notarytool submit ./dist/FloatAssist.dmg \
+  --keychain-profile "AC_NOTARY" --wait
+xcrun stapler staple ./dist/FloatAssist.dmg
+spctl -a -t open --context context:primary-signature -v ./dist/FloatAssist.dmg
+```
+
+La dernière commande doit répondre `accepted`. Quand c’est le cas, retirez des
+deux README la mention indiquant que le binaire n’est ni signé ni notarisé.
+
 ## Régénérer l’identité visuelle
 
 L’icône de l’application, le glyphe de la barre de menus, la marque in-app et
