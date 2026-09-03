@@ -3,6 +3,7 @@
 //  Float Assist
 //
 //  A lightweight SwiftUI/AppKit shortcut recorder for KeyboardShortcut values.
+//  Copyright (c) 2026 Alban Gerschheimer. Licensed under the MIT License.
 //
 
 import AppKit

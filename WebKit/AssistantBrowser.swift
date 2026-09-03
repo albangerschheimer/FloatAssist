@@ -3,6 +3,7 @@
 //  Float Assist
 //
 //  Original browser session layer built with Apple frameworks only.
+//  Copyright (c) 2026 Alban Gerschheimer. Licensed under the MIT License.
 //
 
 import AppKit

@@ -5,6 +5,7 @@
 //  A small, native replacement for a global-shortcut package. It uses Carbon's
 //  RegisterEventHotKey API, which works in a sandboxed macOS app without the
 //  Accessibility permission required by an event tap.
+//  Copyright (c) 2026 Alban Gerschheimer. Licensed under the MIT License.
 //
 
 import AppKit

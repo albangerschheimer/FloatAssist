@@ -40,7 +40,7 @@ struct FloatAssistApp: App {
         MenuBarExtra {
             AppMenuContent(controller: controller)
         } label: {
-            Image(systemName: "bubble.left.and.text.bubble.right")
+            Image("MenuBarMark")
         }
         .menuBarExtraStyle(.menu)
     }

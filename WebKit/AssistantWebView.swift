@@ -3,6 +3,7 @@
 //  Float Assist
 //
 //  Original SwiftUI host for AssistantBrowserModel's one primary WKWebView.
+//  Copyright (c) 2026 Alban Gerschheimer. Licensed under the MIT License.
 //
 
 import AppKit

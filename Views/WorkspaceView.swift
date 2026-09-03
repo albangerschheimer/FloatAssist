@@ -47,8 +47,10 @@ struct AssistantHeader: View {
 
     var body: some View {
         HStack(spacing: compact ? 8 : 10) {
-            Image(systemName: "bubble.left.and.text.bubble.right")
-                .foregroundStyle(.tint)
+            Image("AppMark")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: compact ? 18 : 22, height: compact ? 18 : 22)
                 .accessibilityHidden(true)
 
             Picker("Assistant", selection: Binding(

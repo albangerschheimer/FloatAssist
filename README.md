@@ -1,41 +1,70 @@
-# Float Assist
+<p align="center">
+  <img src="docs/assets/banner.png" alt="Float Assist" width="820">
+</p>
 
-Float Assist est une application macOS native écrite en Swift. Elle place une
-fenêtre d’assistance web compacte à portée de raccourci clavier, puis la laisse
-disparaître lorsque vous revenez à votre travail.
+<p align="center">
+  <img src="https://img.shields.io/badge/macOS-26%2B-1F1B17" alt="macOS 26 or later">
+  <img src="https://img.shields.io/badge/Apple%20Silicon-arm64-1F1B17" alt="Apple Silicon">
+  <img src="https://img.shields.io/badge/Swift-SwiftUI%20%2B%20AppKit-C4553A" alt="Swift, SwiftUI and AppKit">
+  <img src="https://img.shields.io/badge/dependencies-none-10945A" alt="No external dependencies">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-2450D8" alt="MIT licence"></a>
+</p>
 
-## Fonctionnalités
+<p align="center"><em><a href="README.fr.md">Lire ce document en français →</a></em></p>
 
-- Afficher ou masquer le panneau flottant depuis le clavier.
-- Épingler le panneau lorsque vous souhaitez le garder visible.
-- Ouvrir rapidement le contenu du presse-papiers dans le panneau.
-- Passer d’un panneau compact à une fenêtre de navigation complète.
-- Régler les raccourcis globaux et réinitialiser les données de site depuis les
-  réglages macOS de l’application.
-- Conserver les sessions web dans le stockage WebKit de votre Mac.
+---
 
-Float Assist affiche les services web que vous choisissez. L’authentification,
-les données saisies et les règles de chaque service restent gérées par le site
-ouvert dans l’application.
+**Float Assist** is a small native macOS app that keeps a web assistant one keystroke away.
+Press a global shortcut and a floating panel appears over whatever you are doing; press it
+again and the panel is gone. Claude, Gemini and ChatGPT each keep their own session, stored
+by WebKit on your Mac.
 
-## Configuration requise
+It is written in Swift with SwiftUI, AppKit and WebKit. No external packages, no telemetry,
+no account of its own.
 
-- macOS 26 ou version ultérieure
-- Mac Apple Silicon
+## Features
 
-Pour compiler depuis les sources, Xcode 26 ou une version ultérieure est
-nécessaire.
+- **Global shortcut.** Show or hide the floating panel from any application.
+- **Ask with the clipboard.** A second shortcut opens the panel and drops the clipboard text straight into the assistant's input field.
+- **Keep open.** A switch in the panel pins it so it stays visible while you click elsewhere.
+- **Panel or window.** Work in the compact panel, or open the full browsing window when you need room.
+- **Three assistants.** Claude, Gemini and ChatGPT, each with its own WebKit website-data store.
+- **Follows you.** The panel joins every Space and floats above full-screen apps.
+- **Recordable shortcuts.** Set both shortcuts in Settings and restore the defaults at any time.
+- **Reset website data.** Clear cookies, caches and sign-in sessions for every assistant in one action.
 
-## Utilisation
+## Shortcuts
 
-Lancez Float Assist puis utilisez le raccourci configuré dans les réglages pour
-afficher le panneau. Le raccourci par défaut peut être modifié à tout moment.
-Vous pouvez également épingler le panneau ou l’ouvrir dans une fenêtre plus
-grande selon votre façon de travailler.
+| Action | Default | Where |
+| --- | --- | --- |
+| Show or hide the floating panel | <kbd>⌥</kbd> <kbd>Space</kbd> | Anywhere, system-wide |
+| Ask with the clipboard text | <kbd>⇧</kbd> <kbd>⌥</kbd> <kbd>Space</kbd> | Anywhere, system-wide |
+| Show the floating panel | <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>F</kbd> | Application menu |
+| Ask with the clipboard text | <kbd>⇧</kbd> <kbd>⌘</kbd> <kbd>⌥</kbd> <kbd>F</kbd> | Application menu |
+| Dismiss the panel | <kbd>esc</kbd> | Panel focused |
 
-## Construire depuis les sources
+Both global shortcuts are editable in **Settings → Global shortcuts**. A shortcut needs at
+least one modifier; clear a recorder to disable it. If macOS has already reserved a
+combination, Float Assist keeps running and reports it in the window instead of failing.
 
-Depuis la racine du dépôt :
+## Requirements
+
+- macOS 26 or later
+- An Apple Silicon Mac
+- Xcode 26 or later, to build from source
+
+## Install
+
+Open `FloatAssist.dmg` and drag **Float Assist** into Applications.
+
+Builds produced by this repository are **not signed or notarised**, so the first launch
+needs the usual detour: right-click the app, choose **Open**, then confirm. Sign and
+notarise with your own Developer ID before distributing it further.
+
+Float Assist runs as a menu bar app (`LSUIElement`), so it has no Dock icon — look for the
+mark in the menu bar.
+
+## Build from source
 
 ```bash
 xcodebuild build \
@@ -45,17 +74,68 @@ xcodebuild build \
   CODE_SIGNING_ALLOWED=NO
 ```
 
-Pour les tests, la compilation de distribution et la création d’une image disque,
-consultez [docs/BUILD.md](docs/BUILD.md).
+Package a disk image from a Release build:
 
-## Technologies natives
+```bash
+./scripts/create-dmg.sh \
+  "./build/DerivedData/Build/Products/Release/Float Assist.app" \
+  ./dist
+```
 
-Float Assist s’appuie sur les frameworks fournis par Apple : SwiftUI, AppKit,
-WebKit, Foundation, Observation et Carbon. Les tests utilisent XCTest. Aucune
-bibliothèque ou aucun paquet externe n’est requis par les instructions de build
-de ce dépôt.
+Tests, the Release configuration and the disk image are covered in [docs/BUILD.md](docs/BUILD.md).
+
+## The mark
+
+<p align="center">
+  <img src="docs/assets/mark-anatomy.png" alt="The Float Assist mark: a burst of rays with two detached rays, one blue and one green" width="820">
+</p>
+
+The mark is a radiating burst — a deliberate nod to the family of assistant logos Float
+Assist opens. Two rays have broken away from the hub and drifted off, one blue and one
+green: those rays are the floating panel, and they are what keeps the mark from being
+mistaken for any of them.
+
+The application icon, the menu bar glyph, the in-app mark and the artwork above are all
+generated, so the identity is reproducible rather than hand-placed:
+
+```bash
+swift scripts/generate-branding.swift .
+```
+
+## Privacy
+
+Float Assist has no server, no account and no analytics. It opens the assistant websites you
+choose in a WebKit view; sign-in, the data you type and each service's own rules stay with
+that website. Sessions live in this Mac's WebKit storage, one store per assistant, and
+**Settings → Privacy → Reset Website Data** deletes all of them.
+
+The app is sandboxed with the hardened runtime, outgoing network connections only, and no
+access to the camera, microphone, contacts, calendars, location or USB.
+
+## Built with
+
+SwiftUI, AppKit, WebKit, Foundation, Observation and Carbon (for the global hotkeys), plus
+XCTest for the test suite. Nothing else — the build instructions in this repository pull no
+external package.
+
+## Not affiliated
+
+Float Assist is an independent project. It is not affiliated with, endorsed by or sponsored
+by Anthropic, Google or OpenAI. Claude, Gemini and ChatGPT are trademarks of their
+respective owners, and the mark above is an original design, not theirs. Your use of each
+service remains governed by that service's own terms.
 
 ## Licence
 
-Les conditions de distribution du projet sont celles indiquées dans
-[LICENSE](LICENSE).
+Float Assist is released under the **MIT Licence** — see [LICENSE](LICENSE) for the full
+text. Every source file in this repository carries the same notice:
+
+```swift
+//  Copyright (c) 2026 Alban Gerschheimer. Licensed under the MIT License.
+```
+
+In short: you may use, copy, modify, merge, publish, distribute, sublicense and sell copies
+of the software, provided the copyright notice and the permission notice travel with it.
+The software is provided "as is", without warranty of any kind.
+
+© 2026 Alban Gerschheimer.
