@@ -84,24 +84,6 @@ Package a disk image from a Release build:
 
 Tests, the Release configuration and the disk image are covered in [docs/BUILD.md](docs/BUILD.md).
 
-## The mark
-
-<p align="center">
-  <img src="docs/assets/mark-anatomy.png" alt="The Float Assist mark: a burst of rays with two detached rays, one blue and one green" width="820">
-</p>
-
-The mark is a radiating burst — a deliberate nod to the family of assistant logos Float
-Assist opens. Two rays have broken away from the hub and drifted off, one blue and one
-green: those rays are the floating panel, and they are what keeps the mark from being
-mistaken for any of them.
-
-The application icon, the menu bar glyph, the in-app mark and the artwork above are all
-generated, so the identity is reproducible rather than hand-placed:
-
-```bash
-swift scripts/generate-branding.swift .
-```
-
 ## Privacy
 
 Float Assist has no server, no account and no analytics. It opens the assistant websites you

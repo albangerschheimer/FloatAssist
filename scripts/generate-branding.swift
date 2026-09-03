@@ -388,76 +388,6 @@ func drawBanner(width W: CGFloat, height H: CGFloat) -> CGContext {
     return context
 }
 
-/// Spells out, for the README, how the mark differs from the assistant logos
-/// it deliberately echoes.
-func drawMarkAnatomy(width W: CGFloat, height H: CGFloat) -> CGContext {
-    let context = makeContext(width: Int(W), height: Int(H))
-    context.setFillColor(rgb(0xFFFDF9))
-    context.fill(CGRect(x: 0, y: 0, width: W, height: H))
-
-    let R = H * 0.26
-    let center = CGPoint(x: W * 0.5, y: H * 0.46)
-    drawMark(in: context, center: center, radius: R)
-
-    func callout(rayIndex: Int, toTheLeft: Bool, colour: CGColor, title: String, subtitle: String) {
-        let ray = rays()[rayIndex]
-        let tipAngle = (90 - ray.angle - ray.tilt) * .pi / 180
-        let reach = (ray.outer + ray.drift) * R
-        let tip = CGPoint(x: center.x + cos(tipAngle) * reach, y: center.y + sin(tipAngle) * reach)
-        let direction: CGFloat = toTheLeft ? -1 : 1
-        let elbow = CGPoint(x: tip.x + direction * W * 0.045, y: tip.y + H * 0.11)
-        let railEnd = CGPoint(x: elbow.x + direction * W * 0.05, y: elbow.y)
-
-        context.setStrokeColor(colour.copy(alpha: 0.7) ?? colour)
-        context.setLineWidth(max(1, H * 0.006))
-        context.setLineDash(phase: 0, lengths: [H * 0.022, H * 0.018])
-        context.move(to: CGPoint(x: tip.x + direction * W * 0.006, y: tip.y + H * 0.012))
-        context.addLine(to: elbow)
-        context.addLine(to: railEnd)
-        context.strokePath()
-        context.setLineDash(phase: 0, lengths: [])
-
-        let titleSize = H * 0.055
-        let subtitleSize = H * 0.042
-        let titleX = toTheLeft
-            ? railEnd.x - W * 0.02 - width(of: title, size: titleSize, weight: .semibold)
-            : railEnd.x + W * 0.02
-        let subtitleX = toTheLeft
-            ? railEnd.x - W * 0.02 - width(of: subtitle, size: subtitleSize, weight: .regular)
-            : railEnd.x + W * 0.02
-
-        draw(title, at: CGPoint(x: titleX, y: railEnd.y - H * 0.020), size: titleSize, weight: .semibold, color: colour, in: context)
-        draw(subtitle, at: CGPoint(x: subtitleX, y: railEnd.y - H * 0.088), size: subtitleSize, weight: .regular, color: Palette.inkSoft, in: context)
-    }
-
-    callout(
-        rayIndex: 11,
-        toTheLeft: true,
-        colour: Accent.drift.flat,
-        title: "Two rays float free",
-        subtitle: "detached from the hub"
-    )
-    callout(
-        rayIndex: 1,
-        toTheLeft: false,
-        colour: Accent.leaf.flat,
-        title: "In blue and green",
-        subtitle: "not any logo's colours"
-    )
-
-    let caption = "The Float Assist mark"
-    draw(
-        caption,
-        at: CGPoint(x: center.x - width(of: caption, size: H * 0.05, weight: .medium) / 2, y: H * 0.055),
-        size: H * 0.05,
-        weight: .medium,
-        color: Palette.inkSoft,
-        in: context
-    )
-
-    return context
-}
-
 // MARK: - Asset catalog
 
 struct IconEntry {
@@ -572,6 +502,5 @@ print("README artwork")
 write(drawAppIcon(side: 1024), to: assets.appendingPathComponent("app-icon.png"))
 write(drawMarkOnly(side: 640), to: assets.appendingPathComponent("mark.png"))
 write(drawBanner(width: 1600, height: 460), to: assets.appendingPathComponent("banner.png"))
-write(drawMarkAnatomy(width: 1320, height: 620), to: assets.appendingPathComponent("mark-anatomy.png"))
 
 print("Done.")

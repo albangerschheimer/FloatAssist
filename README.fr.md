@@ -87,25 +87,6 @@ Fabriquer une image disque à partir d'un build Release :
 Les tests, la configuration Release et l'image disque sont détaillés dans
 [docs/BUILD.md](docs/BUILD.md).
 
-## La marque
-
-<p align="center">
-  <img src="docs/assets/mark-anatomy.png" alt="La marque Float Assist : une étoile de rayons dont deux rayons, un bleu et un vert, se sont détachés" width="820">
-</p>
-
-La marque est une étoile rayonnante — un clin d'œil assumé à la famille de logos des
-assistants que Float Assist ouvre. Deux rayons se sont détachés du centre et dérivent, l'un
-bleu et l'autre vert : ces rayons, c'est le panneau flottant, et c'est eux qui empêchent de
-confondre cette marque avec les leurs.
-
-L'icône de l'application, le glyphe de la barre de menus, la marque in-app et l'illustration
-ci-dessus sont tous générés, pour que l'identité soit reproductible plutôt que placée à la
-main :
-
-```bash
-swift scripts/generate-branding.swift .
-```
-
 ## Confidentialité
 
 Float Assist n'a ni serveur, ni compte, ni analytique. L'application ouvre dans une vue
